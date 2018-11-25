@@ -1,0 +1,80 @@
+provisioner:
+  name: chef_zero
+  product_name: chef
+  product_version: 13.12.3
+  always_update_cookbooks: true
+
+verifier:
+  name: inspec
+
+platforms:
+  - name: centos-6.9
+    driver:
+      name: docker
+      privileged: true
+      use_sudo: false
+  - name: centos-7
+    driver:
+      name: ec2
+      aws_ssh_key_id: <%= ENV['AWS_SSH_KEY_ID'] %> # name of the AWS key pair
+      region: <%= ENV['AWS_DEFAULT_REGION'] || "us-east-1" %>
+      availability_zone: <%= ENV['AWS_AZ'] || "us-east-1a" %>
+      security_group_ids: <%= ENV['AWS_SG_ID'] || "sg-xxxxxx" %>
+      subnet_id: <%= ENV['AWS_SUBNET_ID'] || "subnet-xxxxxxx" %>
+      interface: public
+      associate_public_ip: true
+      instance_type: t2.micro
+      shared_credentials_profile: <%= ENV['AWS_PROFILE'] || "default" %>
+      tags:
+        Name: centos 7 created by test-kitchen
+    transport:
+      username: centos
+  - name: ubuntu-18.04
+    driver:
+      name: ec2
+      aws_ssh_key_id: <%= ENV['AWS_SSH_KEY_ID'] %> # name of the AWS key pair
+      region: <%= ENV['AWS_DEFAULT_REGION'] || "us-east-1" %>
+      availability_zone: <%= ENV['AWS_AZ'] || "us-east-1a" %>
+      security_group_ids: <%= ENV['AWS_SG_ID'] || "sg-xxxxxx" %>
+      subnet_id: <%= ENV['AWS_SUBNET_ID'] || "subnet-xxxxxxx" %>
+      interface: public
+      associate_public_ip: true
+      instance_type: t2.micro
+      shared_credentials_profile: <%= ENV['AWS_PROFILE'] || "default" %>
+      tags:
+        Name: ubuntu 18.04 created by test-kitchen
+    transport:
+      username: ubuntu
+  - name: debian-9
+    driver:
+      name: ec2
+      aws_ssh_key_id: <%= ENV['AWS_SSH_KEY_ID'] %> # name of the AWS key pair
+      region: <%= ENV['AWS_DEFAULT_REGION'] || "us-east-1" %>
+      availability_zone: <%= ENV['AWS_AZ'] || "us-east-1a" %>
+      security_group_ids: <%= ENV['AWS_SG_ID'] || "sg-xxxxxx" %>
+      subnet_id: <%= ENV['AWS_SUBNET_ID'] || "subnet-xxxxxxx" %>
+      interface: public
+      associate_public_ip: true
+      instance_type: t2.micro
+      shared_credentials_profile: <%= ENV['AWS_PROFILE'] || "default" %>
+      tags:
+        Name: debian-9-Stretch created by test-kitchen
+    transport:
+      username: admin
+suites:
+  - name: default
+    run_list:
+      - recipe[aws-inspector::default]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
+
+suites:
+  - name: default
+    run_list:
+      - recipe[aws-inspector::default]
+    verifier:
+      inspec_tests:
+        - test/integration/default
+    attributes:
