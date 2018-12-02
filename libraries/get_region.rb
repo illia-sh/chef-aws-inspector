@@ -15,6 +15,9 @@ module AWSInspectorAgent
     rescue Timeout::Error => e
       @error = e
       Chef::Log.warn('timeout connecting to 169.254.169.254...')
+    rescue Errno::EHOSTUNREACH => e 
+      @error = e
+      Chef::Log.warn('no route to host 169.254.169.254...')
     end
   end
 end
